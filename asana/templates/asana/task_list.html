@@ -1,0 +1,54 @@
+<!-- asana/templates/asana/task_list.html -->
+<h1>Meeting Tasks</h1>
+
+<!-- Search Form -->
+<form method="get" action="">
+    <input type="text" name="q" placeholder="Search Tasks" value="{{ search_query }}">
+    <button type="submit">Search</button>
+</form>
+
+{% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Assignee</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>
+                {% if task.assignee %}
+                    {{ task.assignee.username }}
+                {% else %}
+                    Unassigned
+                {% endif %}
+            </td>
+            <td>{{ task.due_date }}</td>
+            <td class="{% if task.completed %}completed{% else %}incomplete{% endif %}">
+                {% if task.completed %}Completed{% else %}Pending{% endif %}
+            </td>
+            <td>{{ task.priority }}</td>
+            <td>
+                <!-- Edit Button -->
+                <a href="{% url 'asana:edit_task' task.id %}" class="btn btn-primary">Edit</a>
+                <!-- Delete Button -->
+                <a href="{% url 'asana:delete_task' task.id %}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No tasks found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
